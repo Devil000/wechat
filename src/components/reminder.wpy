@@ -1,0 +1,64 @@
+<template>
+  <view class="reminder-root">
+    <image class="icon" src="/images/components/notification.png" />
+    <span class"texture">所有聚会满6人即组队成功，并会有聚会短信通知。特别长特别长特别长特别长特别长特别长特别长特别长</span>
+    <image @tap="closeReminder" class="close" src="/images/components/close.png" />
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Reminder extends wepy.component {
+  components = {};
+  methods = {
+    closeReminder() {
+      this.setData({
+        showStatus: false
+      })
+    }
+  };
+
+  events = {};
+  // Other properties
+}
+</script>
+
+<style lang="less" scoped>
+    .reminder-root {
+      width: 100%;
+      height: 28px;
+      border-radius: 5px;
+      background-color: #fe4800;
+      box-shadow: 0 1px 2px 0 rgba(180, 137, 14, 0.59);
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      color: white;
+      font-size: 10px;
+      font-weight: 300;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      margin:8px 0;
+      .icon {
+        height:15.7px;
+        width:19.1px;
+        margin-left: 5px;
+      }
+      .texture {
+        width:100%;
+        padding-right:25px;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+      }
+      .close {
+        height: 15.7px;
+        width: 15.7px;        
+        position: absolute;
+        right: 5px;
+      }        
+    }
+</style>

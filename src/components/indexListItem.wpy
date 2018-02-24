@@ -1,0 +1,127 @@
+<template lang="wxml">
+    <view class="root">  
+      <view class="limage">
+      </view>
+      <view class="detail">
+        <view class"popular">
+          <image class="inimg" src="/images/app/fire.png"/>
+          <span class="imtext">人气值 96万</span>
+        </view>
+        <view class="name">{{item.title}}</view>
+        <view class="location">{{item.location}}</view>
+        <view class="distance">{{item.distance}}</view>
+      </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Item extends wepy.component {
+  props = {
+    item: {}
+  }
+  components = {};
+
+  data = {};
+  methods = {};
+
+  events = {};
+  // Other properties
+}
+</script>
+
+<style lang="less" scoped>
+  .root {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 17px;
+    border-bottom:.2px solid #ececec;
+    height: 133px;
+    background-color: #ffffff;
+    position: relative;
+    
+    .limage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 93px;
+      height: 93px;
+      border-radius: 50%;    
+      background-color: gray;
+      flex-shrink: 0;
+    }
+    .detail {
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:flex-start;
+      padding:0 17px;
+      width:60%;
+      font-weight:500;
+      height:100%;
+      .popular {
+        font-weight: 300;
+        height:25px;
+        font-size:10px;
+        width:84px;
+        position:relative;
+        align-self:flex-end;
+        margin-right:-25px;
+        margin-top:5px;
+        .inimg {
+          height:25px;
+          width:25px;
+          z-index:11;
+          position:absolute;
+          top:0;
+          right:75px;
+        }
+        .imtext {
+          height:17px;
+          width:84px;
+          border-radius:100px;
+          background-color:#ff3d00;
+          color:white;
+          position:absolute;
+          right:0;
+          top: 4px;
+          z-index:10;
+          text-align: center;
+        }
+      }
+      .name {
+        font-size: 16px;
+        color: #222222;
+        padding: 2px 0;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        width: 100%;
+        padding-right: 17px;
+      }
+      .location {
+        font-size: 12px;
+        color: #e0b325;
+        padding: 2px 0;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        width: 100%;
+        padding-right: 17px;
+      }
+      .distance {
+        font-size: 12px;
+        color: #6c6c6c;
+        padding: 2px 0;
+        overflow:hidden;
+        white-space:nowrap;
+        width: 100%;
+        padding-right: 17px;
+        text-overflow:ellipsis;
+      }
+    }
+  }
+</style>

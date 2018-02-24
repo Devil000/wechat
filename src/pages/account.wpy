@@ -1,0 +1,576 @@
+
+<template>
+  <view class="container">
+    <scroll-view scroll-y style="height: {{scrollH}}px" bindscrolltoupper="upper" bindscrolltolower="getData" bindscroll="scroll" class="scroll-wrap">
+      <view class="record-content">
+        <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+        <text>我在星视度体验了 <text class="record-count">{{recordCount}}</text> 次</text>
+      </view>
+      <view class="list-wrap">
+        <block wx:for-items="{{myInfoList}}" wx:for-item="item" wx:key="index">
+          <view class="list-item">
+            <view class="mylist">
+              <view>
+                <text class="record-date">{{item.date}}</text>
+              </view>
+              <view class="game-info-wrap info">
+                在<text>{{item.addressName}}</text>体验了互动节目 <text class="project-info">【{{item.projectName}}】</text>
+              </view>
+              <view class="image-wrap" wx:if="{{item.imageUrl}}">
+                <image class="image-src" src="{{item.imageUrl}}" mode="scaleToFill" />
+              </view>
+              <view wx:if="{{!item.imageUrl}}" class="info">
+                <text>打败了<text class="play-count">{{item.playName}}</text>玩家</text>
+              </view>
+              <view class="detail">
+                游戏详情&gt;
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    <view class="pop-back" style="height: {{scrollH}}px" @tap="switchPopStatus" wx:if="{{popShouldShow === true}}">
+      
+      <view class="pop-model" wx:if="{{inGettingCodePage === true}}">
+        <span class="title">手机登录，即刻查看星视度历程</span>
+        <span class="sub-title" wx:if="{{inGettingCodePage === true}}">还有更多星视度惊喜，抢先体验！</span>
+        <view class="input-area" :class="{'input-error': inputValueError === true, 'input-normal': inputValueError === false}">
+          <input type="number" @tap="clearInput" bindinput="bindKeyInput" maxlength="{{11}}" class="input-focus" placeholder="请输入手机号"/>
+          <view class="code-button" wx:if="{{hasGettingCode === false}}">
+            <text class="inner-tap" @tap="getSMSCode">动态登录</text>
+          </view>
+          <view class="error-remind">
+            <text wx:if="{{inputValueError === true}}">手机号码有误</text> 
+          </view>
+          <view class="time-count" wx:if"{{hasGettingCode === true}}">
+            {{timeLeft}}s
+          </view>
+        </view>
+
+        <navigator 
+          class="pop-navi"
+          url="/pages/index" 
+          open-type="switchTab" 
+          hover-class="other-navigator-hover">
+            <view>o(︶︿︶)o 狠心放弃本次记录</view>
+            <view>去逛首页</view>
+        </navigator>
+
+      </view>
+
+      <view class="pop-model" wx:if="{{inGettingCodePage === false}}">
+        <span class="title-second">手机登录，即刻查看星视度历程</span>
+        <view class="input-area" :class="{'input-error': codeValueError === true, 'input-normal': codeValueError === false}">
+          <input type="number" @tap="clearCode" bindinput="bindCodeInput" maxlength="{{11}}" class="input-focus" placeholder="请输入动态码"/>
+          <view class="code-button" wx:if="{{hasGettingCode === false}}">
+            <text class="inner-tap" @tap="getSMSCode">动态登录</text>
+          </view>
+          <view class="time-count" wx:if"{{hasGettingCode === true}}">
+            {{timeLeft}}s
+          </view>
+        </view>
+        <button class="confirm" @tap="goConfirm">确认</button>
+        <view class="error-remind">
+            <text wx:if="{{codeValueError === true}}">验证码有误</text> 
+        </view>
+        <view class="pop-second-navi" @tap="goBackInputPhone">
+            <view>重新输入手机号</view>
+        </view>
+      </view>
+
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Account extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的',
+      navigationBarTextStyle: 'white',
+      navigationBarBackgroundColor: '#f2c426'
+    }
+    components = {
+    }
+    data = {
+      timeCount: null,
+      inputValue: '',
+      codeValue: '',
+      inGettingCodePage: true,
+      inputValueError: false,
+      codeValueError: false,
+      popShouldShow: true,
+      hasGettingCode: false,
+      timeLeft: 10,
+      scrollH: 0,
+      recordCount: 2,
+      userInfo: {
+        nickName: '加载中...'
+      },
+      loading: false,
+      myInfoList: [
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          playName: '90332',
+          imageUrl: null
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          playName: '90332',
+          imageUrl: null
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          imageUrl: '../images/test.png'
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          imageUrl: '../images/test.png'
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          playName: '90332',
+          imageUrl: null
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          imageUrl: '../images/test.png'
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          playName: '90332',
+          imageUrl: null
+        },
+        {
+          date: '2017年2月14日',
+          addressName: '宏伊广场',
+          projectName: '你为什么没钱',
+          linkUrl: 'http://baidu.com',
+          playName: '90332',
+          imageUrl: null
+        }
+      ]
+    }
+    computed = {
+    }
+    methods = {
+      onShareAppMessage: function (res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+        }
+        return {
+          title: '自定义转发标题',
+          path: '/page/user?id=123',
+          success: function(res) {
+            // 转发成功
+          },
+          fail: function(res) {
+            // 转发失败
+          }
+        }
+      },
+      getData: function() {
+        let _this = this
+        if (_this.loading === false) {
+          _this.loading = true
+          setTimeout(() => {
+            for (let i = 0; i <= 6; i++) {
+              _this.data.myInfoList.push({
+                date: '2017年2月14日',
+                addressName: '宏伊广场',
+                projectName: '你为什么没钱',
+                linkUrl: 'http://baidu.com',
+                playName: '90332',
+                imageUrl: ''
+              })
+            }
+            _this.loading = false
+            _this.$apply()
+          }, 500)
+        }
+      },
+      switchPopStatus() {
+        // this.popShouldShow = !this.popShouldShow
+      },
+      bindKeyInput: function(e) {
+        this.inputValue = e.detail.value
+        this.$apply()
+      },
+      bindCodeInput: function(e) {
+        this.codeValue = e.detail.value
+        this.$apply()
+      },
+      clearInput() {
+        this.inputValueError = false
+      },
+      getSMSCode() {
+        this.inputValueError = false
+        // this.timeLeft = 60
+        const _this = this
+        if (!(/^1[34578]\d{9}$/.test(this.inputValue))) {
+          this.inputValueError = true
+        } else {
+          this.inGettingCodePage = false
+          function timeDe() {
+            if (_this.timeLeft <= 1) {
+              clearInterval(_this.timeCount)
+              _this.timeCount = ''
+              _this.hasGettingCode = false
+              _this.timeLeft = 60
+              _this.$apply()
+              return
+            }
+            _this.timeLeft--
+            _this.$apply()
+          }
+          this.hasGettingCode = true
+          this.timeCount = setInterval(timeDe, 1000)
+        }
+      },
+      goBackInputPhone() {
+        clearInterval(this.timeCount)
+        this.inGettingCodePage = true
+        this.timeLeft = 60
+        console.log(this.timeLeft)
+        this.inputValue = ''
+        this.codeValueError = false
+        this.hasGettingCode = false
+        this.$apply()
+      },
+      clearCode() {
+        this.codeValueError = false
+      },
+      goConfirm() {
+        let _this = this
+        if (this.codeValue === '1111') {
+          this.popShouldShow = false
+          wepy.getUserInfo({
+            success: function(res) {
+              _this.userInfo = res.userInfo
+              _this.$apply()
+            },
+            fail: function(res) {
+            }
+          })
+          try {
+            wepy.setStorageSync('loginState', 'true')
+          } catch (e) {
+          }
+          this.$apply()
+        } else {
+          this.codeValueError = true
+        }
+      }
+    }
+    events = {
+    }
+    onLoad() {
+      let _this = this
+      // Change height
+      wepy.getSystemInfo({
+        success: function(res) {
+          _this.scrollH = res.windowHeight
+        }
+      })
+      // Catch loginState
+      try {
+        var value = wepy.getStorageSync('loginState')
+        if (value) {
+          this.popShouldShow = false
+          wepy.getUserInfo({
+            success: function(res) {
+              _this.userInfo = res.userInfo
+              _this.$apply()
+            },
+            fail: function(res) {
+            }
+          })
+            // Do something with return value
+        }
+      } catch (e) {
+        wepy.clearStorage()
+        // Do something when catch error
+      }
+      // 检查登陆状态
+      wepy.checkSession({
+        success: function(e) {
+        // session 未过期，并且在本生命周期一直有效
+        },
+        fail: function() {
+        // 登录态过期
+          wepy.login({
+            success: function(res) {
+            },
+            fail: function(res) {
+            }
+          })
+        }
+      })
+    }
+  }
+</script>
+
+<style lang="less">
+  .container {
+    background-color: #f2c426;
+    .scroll-wrap{
+      background: #fff;
+      border-radius:5px;
+      font-family: PingFangSC;
+      width: 710rpx;
+      margin: 0 20rpx;
+      // background: #f2c426;
+        .record-content{
+          border-radius: 5px;
+          color: #222222;
+          font-size: 16px;
+          display: flex;
+          height: 290rpx;
+          align-items: center;
+          border:1px solid #ececec;
+          .userinfo-avatar {
+            width: 186rpx;
+            height: 186rpx;
+            border-radius: 50%;
+            margin-right: 54rpx;
+            margin-left: 30rpx;
+          }
+          .record-count{
+            color: #ff3d00;
+            font-size: 24px;
+          }
+      }
+      .list-wrap{
+        .list-item:nth-child(1){
+          &::before{
+            top: 25%;
+            // height: 50%;
+          }
+        }
+        .list-item{
+          position: relative;
+          padding-top: 34rpx;
+          padding-left: 58rpx;
+          &::before{
+            content: "";
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            border-right: 4px solid #f5f5f5;
+            left: 30rpx;
+            z-index: 1;
+          }
+          &::after{
+            content: "";
+            display: inline-block;
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #f2bd00;
+            border-radius: 4px;
+            left: 34rpx;
+            top: 50rpx;
+            margin-top: -2px;
+            z-index: 1;
+          }
+          .mylist{
+            font-size: 12px;
+            color: #444;
+            line-height: 2;
+            .record-date{
+              color: #f2bd00;
+            }
+            .game-info-wrap{
+              padding-left: 12rpx;
+              .project-info{
+                color: #f2bd00;
+                font-weight: 500;
+              }
+            }
+            .info{
+              padding-left: 12rpx;
+            }
+            .detail{
+              text-decoration: underline;
+              text-align: right;
+              padding-right: 32rpx;
+            }
+            .image-wrap{
+              padding:10rpx 30rpx 10rpx 12rpx;
+              .image-src{
+                width: 100%;
+              }
+            }
+            .play-count{
+              color: #ff3d00;
+            }
+          }
+        }
+      }
+    }
+    .pop-back {
+      background-color:rgba(0,0,0,0.77);
+      width: 100%;
+      z-index: 2000;  
+      position: fixed;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .pop-model {
+        width: 720rpx;
+        margin-left: 15rpx;
+        position: fixed;  
+        margin-top: 380rpx;  
+        z-index: 2000;  
+        background: #fff;  
+        border-radius: 5px;  
+        height: 192px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .title {
+          font-size: 20px;
+          font-weight: 500;
+          color: #222222;
+          margin-bottom: 4px;
+        }
+        .title-second {
+          font-size: 20px;
+          font-weight: 500;
+          color: #222222;
+          margin-bottom: 13px;
+        }
+        .sub-title {
+          height: 17px;
+          font-size: 12px;
+          color: #222222;
+          font-weight: 300;
+          margin-bottom: 20px;
+        }
+        .input-area {
+          width:654rpx;
+          height:43px;
+          border-radius:2px;
+          background-color:#ffffff;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          position:relative;
+          .input-focus {
+            top:0;
+            left:0;
+            width:400rpx;
+            height:43px;
+            padding-left:32rpx;
+            font-size:14px;
+            font-weight:300;
+          }
+          .code-button {
+            width: 200rpx;
+            height: 43px;
+            position:absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 0;
+            right: 0;
+            .inner-tap {
+              border-left:1px solid #e5e5e5;
+              padding: 0 40rpx;
+              font-size: 14px;
+              color: #fe4800;
+              font-weight: 300;
+            }
+          }
+          .time-count {
+            width:40%;
+            height:43px;
+            position:absolute;
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+            top:0;
+            right:0;
+            font-size:14px;
+            color:#fe4800;
+            padding-right:40rpx;
+          }
+          .error-remind {
+            font-size: 13px;
+            color: red;
+            padding: 10px;
+          }
+        }
+        .input-normal{
+          border:solid 1px #e5e5e5;
+        }
+        .input-error {
+          border:solid 1px red;
+        }
+        .confirm {
+          width:654rpx;
+          height:43px;
+          border-radius:2px;
+          background-color:#f2ca3f;
+          margin-top:8px;
+          color:white;
+        }
+        .pop-navi {
+          text-decoration:underline;
+          position: absolute;
+          bottom: -50px;
+          font-size: 14px;
+          text-align: center;
+          color: #ffffff;
+        }
+        .pop-second-navi {
+          text-decoration:underline;
+          position: absolute;
+          bottom: -30px;
+          font-size: 14px;
+          text-align: center;
+          color: #ffffff;
+        }
+        .error-remind {
+          font-size:13px;
+          color:red;
+          align-self:left;
+          padding-top:8px;
+          height:13px;
+          padding-left:40rpx;
+        }
+    }
+  }
+  
+  .userinfo-nickname {
+    color: #aaa;
+  }
+ 
+</style>

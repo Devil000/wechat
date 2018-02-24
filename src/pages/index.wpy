@@ -1,0 +1,214 @@
+<template lang="wxml">
+  <view class="container">
+    
+    <scroll-view bindscroll="scroll" class="long-list" scroll-y="true" bindscrolltolower="getData" style="height: {{windowH+'px'}}">
+
+      <swiper 
+        class="top-area"
+        indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" 
+        interval="{{interval}}" 
+        duration="{{duration}}">
+        <repeat for="{{imgUrls}}" key="index" index="index" item="item">
+          <swiper-item>
+            <image src="{{item}}" class="slide-image"/>
+          </swiper-item>
+        </repeat>
+      </swiper>
+
+      <Reminder wx:if="{{showStatus === true}}"/>
+
+      <view class="list-content">
+        <view class="menu-bar">
+          <view class="menu-item" :class="{'menu-active': active === 0}">
+            最新游戏
+          </view>
+          <view class="menu-item">
+            离我最近
+          </view>
+          <view class="menu-item">
+            人气好评
+          </view>
+        </view>
+        <repeat for="{{list}}" key="index" index="index" item="item">
+          <Item :item.sync="item"></Item>
+        </repeat>
+      </view>
+      
+    </scroll-view>
+  </view>
+ </template>
+ 
+<script>
+import wepy from 'wepy'
+import Item from '../components/indexListItem'
+import Reminder from '../components/reminder'
+export default class Index extends wepy.page {
+  components = {
+    // 声明页面中要使用到的Child组件的ID为child
+    Item: Item,
+    Reminder: Reminder
+  }
+  computed = {
+    active() {
+      return this.activeMenu
+    }
+  }
+  data = {
+    list: [
+      {id: 1, title: '节目名称', location: '千寻寿司(新天地店)', distance: '1.2km'},
+      {id: 2, title: '节目名称', location: '新元素(新天地店)', distance: '3.2km'},
+      {id: 3, title: '节目名称', location: 'Green&Safe(新天地店)', distance: '11.2km'},
+      {id: 4, title: '节目名称', location: '平成屋(新天地店)', distance: '13.4km'},
+      {id: 5, title: '节目名称', location: '花蝶居酒屋(新天地店)', distance: '18.2km'},
+      {id: 6, title: '节目名称', location: '豆丹(新天地店)', distance: '20.2km'},
+      {id: 6, title: '节目名称特别长特别长特别长特别长特别长特别长特别长特别长特别长', location: '豆丹(新天地店)特别长特别长特别长特别长特别长特别长特别长特别长特别长特别长', distance: '20.2km'}
+    ],
+    windowH: 0,
+    loading: false,
+    imgUrls: [
+      'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
+      'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
+      'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
+    ],
+    indicatorDots: true,
+    autoplay: true,
+    interval: 5000,
+    duration: 1000,
+    activeMenu: 0,
+    showStatus: true
+  }
+  config = {
+    navigationBarTitleText: '首页'
+  }
+  onLoad() {
+    let that = this
+    wepy.getSystemInfo({
+      success: function(res) {
+        that.windowH = res.windowHeight
+        // console.log(res.model)
+        // console.log(res.pixelRatio)
+        // console.log(res.windowWidth)
+        // console.log(res.windowHeight)
+        // console.log(res.language)
+        // console.log(res.version)
+        // console.log(res.platform)
+      }
+    })
+    wepy.getLocation({
+      altitude: true,
+      success: function(res) {
+        console.dir(res)
+      },
+      fail: function(res) {
+
+      },
+      complete: function(res) {
+
+      }
+    })
+  }
+  methods = {
+    changeIndicatorDots: function(e) {
+      this.setData({
+        indicatorDots: !this.data.indicatorDots
+      })
+    },
+    changeAutoplay: function(e) {
+      this.setData({
+        autoplay: !this.data.autoplay
+      })
+    },
+    intervalChange: function(e) {
+      this.setData({
+        interval: e.detail.value
+      })
+    },
+    durationChange: function(e) {
+      this.setData({
+        duration: e.detail.value
+      })
+    }
+  }
+  getData() {
+    const that = this
+    if (that.loading === false) {
+      that.loading = true
+      setTimeout(() => {
+        for (let i = 0; i <= 6; i++) {
+          that.data.list.push({
+            id: i + that.data.list.length,
+            title: '第' + that.data.list.length.toString() + '个标题',
+            distance: '20.2 + ' + that.data.list.length.toString() + ' km'
+          })
+        }
+        that.loading = false
+        that.$apply()
+      }, 1000)
+    }
+  }
+  lower(e) {
+    console.log(e)
+  }
+  scroll(e) {
+    console.log(e)
+  }
+}
+</script>
+
+<style lang="less" scoped>
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f2c426;
+    .long-list {
+      width: 710rpx;
+      margin: 0 20rpx;
+      .menu-bar {
+      width: 100%;
+      height: 36px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+      background-color: white;
+      .menu-item {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        border-bottom:.2px solid #ececec;
+        color: #c1c1c1;
+      }
+      .menu-active {
+        color: #222222;
+      }
+    }
+      .list-content {
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        box-shadow: 0 1px 2px 0 rgba(181, 137, 14, 0.73);
+      }
+    }
+    .top-area {
+      width: 710rpx;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 1px 2px 0 rgba(181, 137, 14, 0.5);
+    }
+  }
+  .slide-image {
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    width: 100%;
+  }
+  
+</style>
