@@ -17,35 +17,56 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index',
-      'pages/account'
+      // 'pages/index',
+      // 'pages/account',
+      'pages/home',
+      'pages/floor',
+      'pages/feng'
     ],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#f2c426',
+      navigationBarBackgroundColor: '#f8f8f8',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'white'
-    },
-    tabBar: {
-      color: '#888',
-      selectedColor: '#ECAF00',
-      backgroundColor: '#fff',
-      borderStyle: 'white',
-      list: [
-        {
-          pagePath: 'pages/index',
-          text: '首页',
-          iconPath: 'images/app/home.png',
-          selectedIconPath: 'images/app/home-selected.png'
-        },
-        {
-          pagePath: 'pages/account',
-          text: '我的',
-          iconPath: 'images/app/account.png',
-          selectedIconPath: 'images/app/account-selected.png'
-        }
-      ]
+      navigationBarTextStyle: 'black'
     }
+    // tabBar: {
+    //   color: '#888',
+    //   selectedColor: '#ECAF00',
+    //   backgroundColor: '#fff',
+    //   borderStyle: 'white',
+    //   list: [
+        // {
+        //   pagePath: 'pages/index',
+        //   text: '首页',
+        //   iconPath: 'images/app/home.png',
+        //   selectedIconPath: 'images/app/home-selected.png'
+        // },
+        // {
+        //   pagePath: 'pages/account',
+        //   text: '我的',
+        //   iconPath: 'images/app/account.png',
+        //   selectedIconPath: 'images/app/account-selected.png'
+        // },
+        // {
+        //   pagePath: 'pages/feng',
+        //   text: '蜂鸟云',
+        //   iconPath: 'images/app/account.png',
+        //   selectedIconPath: 'images/app/account-selected.png'
+        // },
+        // {
+        //   pagePath: 'pages/home',
+        //   text: '商场首页',
+        //   iconPath: 'images/app/home.png',
+        //   selectedIconPath: 'images/app/home-selected.png'
+        // }
+        // {
+        //   pagePath: 'pages/smap',
+        //   text: '室内图',
+        //   iconPath: 'images/app/home.png',
+        //   selectedIconPath: 'images/app/home-selected.png'
+        // }
+    //   ]
+    // }
   }
 
   globalData = {

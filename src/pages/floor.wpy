@@ -1,0 +1,199 @@
+<template lang="wxml">
+<view class="container">
+  <view class="select-wrap">
+    <view class="section">
+      <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" class="picker-select">
+        <view class="picker">
+          {{array[index]}}
+          <view class="triangle"></view>
+        </view>
+      </picker>
+    </view>
+    <navigator url="/pages/feng" open-type="redirect" delta="1" hover-class="none">
+      <image mode="widthFix" src="{{icon3D}}" style="width:13%;position:absolute;top: 30px;right: 10px; z-index: 3000;"></image>
+    </navigator>
+  </view>
+  <scroll-view bindscroll="scroll" class="long-list" scroll-y="true" bindscrolltolower="getData" style="white-space:nowrap;height: {{windowH+'px'}}" >
+    <view class="floor-content">
+      <view class="floor-list">
+        <repeat for="{{shopList}}" key="index" index="index" item="item">
+          <FloorItem :item.sync="item" @childFn.user="openPop"></FloorItem>
+        </repeat>
+      </view>
+    </view>
+  </scroll-view>
+    <view class="pop-back" style="height: {{popH}}px" wx:if="{{showPop}}">
+      <view class="pop-model">
+        <span class="title">联动说明</span>
+        <span class="pop-text">
+          描述文字描述文字描述文字描述文字描述文字描
+          述文字描述文字描述文字
+        </span>
+        <image mode="widthFix" src="{{close}}" class="pop-close" @tap="closePop"></image>
+      </view>
+    </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import list from './data'
+import FloorItem from '../components/floorList'
+
+export default class Floor extends wepy.page {
+  components = {
+    FloorItem: FloorItem
+  };
+  data = {
+    array: ['全部楼层', 'F3', 'F2', 'F1', 'B1'],
+    index: 0,
+    windowH: 0,
+    shopList: list,
+    popH: 0,
+    icon3D: '/images/floor/3D.png',
+    showPop: false,
+    close: '/images/floor/close.png'
+  };
+  onLoad() {
+    let that = this
+    console.log(this)
+    console.log(wepy)
+    wepy.getSystemInfo({
+      success: function(res) {
+        that.windowH = res.windowHeight - 50
+        that.windowW = res.windowWidth
+        that.popH = res.windowHeight
+      }
+    })
+  }
+  config = {
+    navigationBarTitleText: '楼层列表'
+  }
+  methods = {
+    openPop(value, events) {
+      this.showPop = value
+    },
+    closePop() {
+      this.showPop = false
+    },
+    bindPickerChange: function(e) {
+      this.index = e.detail.value
+      let flag = this.index === '0'
+      if (flag) {
+        this.shopList = list
+      } else {
+        let floorIndex = parseInt(this.index)
+        let newArr = list.filter(function(v) {
+          return parseInt(v.floorId) === parseInt(floorIndex)
+        })
+        this.shopList = this.index === '4' ? this.shopList : newArr
+      }
+    }
+  };
+
+  events = {};
+  // Other properties
+}
+</script>
+<style lang="less" scoped>
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #403c38;
+  .select-wrap{
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 0.5px solid #2c2c2c;
+    .section{
+      width: 114px;
+      margin: auto;
+      height: 30px;
+      border-radius: 15px;
+      border: solid 0.5px #979797;
+      .picker-select{
+        .picker{
+          color: #aeadb4;
+          font-size: 15px;
+	        letter-spacing: 1.2px;
+          text-align: center;
+          height: 30px;
+          line-height: 30px;
+          position: relative;
+          .triangle{
+            width:0;
+            height:0;
+            border-width:7px;
+            border-style:solid dashed dashed dashed;
+            border-color:#aeadb4 transparent transparent transparent;
+            position:absolute;
+            right:10px;
+            top:13px;
+          }
+        }
+      }
+    }
+  }
+  .long-list {
+    .floor-content{
+      padding-top: 7px;
+      .floor-list {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  .pop-back {
+    background-color:rgba(0,0,0,0.77);
+    width: 100%;
+    z-index: 2000;  
+    position: fixed;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .pop-model {
+    margin-left: 24px;
+    margin-right: 23px;
+    position: fixed;  
+    margin-top: 380rpx;  
+    z-index: 2000;  
+    background: #fff;  
+    border-radius: 4px; 
+    border: solid 1px #979797;
+    padding: 14px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .title{
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.4px;
+      text-align: center;
+      color: #DABC8D;
+      padding-bottom: 12px;
+    }
+    .pop-text{
+      color: #aeadb4;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+    }
+    .pop-close {
+      width: 20%;
+      position: absolute;
+      bottom:-75%;;
+      text-align: center;
+    }
+  }
+}
+</style>

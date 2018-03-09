@@ -1,0 +1,241 @@
+<template lang="wxml">
+  <view class="container">
+    
+    <scroll-view bindscroll="scroll" class="long-list" scroll-y="true" bindscrolltolower="getData" style="white-space:nowrap;height: {{windowH+'px'}}" >
+
+      <swiper 
+        class="top-area"
+        indicator-dots="{{indicatorDots}}"
+        autoplay="{{autoplay}}" 
+        interval="{{interval}}" 
+        duration="{{duration}}" previous-margin="20rpx" next-margin="20rpx" current="{{current}}" circular="{{circular}}">
+        <repeat for="{{imgUrls}}" key="index" index="index" item="item">
+          <swiper-item>
+            <image src="{{item}}" class="slide-image" mode="widthFix" style="width:100%;border-radius: 4px;"></image>
+          </swiper-item>
+        </repeat>
+      </swiper>
+
+      <view class="coupon-content">
+        <view class="coupon-title">优惠券</view>
+        <view class="coupon-list">
+          <repeat for="{{couponUrls}}" key="index" index="index" item="item">
+            <CouponItem :item.sync="item"></CouponItem>
+          </repeat>
+        </view>
+      </view>
+
+      <view class="shop-content">
+        <view class="shop-title">商品推荐</view>
+        <view class="shop-list">
+          <repeat for="{{shopUrls}}" key="index" index="index" item="item">
+            <ShopItem :item.sync="item"></ShopItem>
+          </repeat>
+        </view>
+      </view>
+      <view class="hint">没有更多~_~</view>
+    </scroll-view>
+    <view class="btn-wrap-shadow">
+    </view>
+    <view class="btn-wrap">
+      <view class="btn">
+        <image src="{{icon}}" mode="aspectFit" bindload="imageIconLoad" style="width:15%; height: 100%; position:absolute;"></image>
+        <view class="text">
+          <navigator url="/pages/floor" open-type="navigate" hover-class="navigator-hover">活动导航</navigator>
+        </view>
+      </view>
+    </view>
+  </view>
+ </template>
+ 
+<script>
+import wepy from 'wepy'
+import ShopItem from '../components/shopList'
+import CouponItem from '../components/couponList'
+
+export default class Home extends wepy.page {
+  components = {
+    // 声明页面中要使用到的Child组件的ID为child
+    ShopItem: ShopItem,
+    CouponItem: CouponItem
+  }
+  computed = {
+    active() {
+      return this.activeMenu
+    }
+  }
+  data = {
+    images: {},
+    windowH: 0,
+    windowW: 0,
+    loading: false,
+    imgUrls: [
+      '/images/home/banner.png',
+      '/images/home/banner.png',
+      '/images/home/banner.png'
+    ],
+    couponUrls: ['/images/home/coupon1.png', '/images/home/coupon.png'],
+    shopUrls: ['/images/home/shop.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop.png'],
+    indicatorDots: false,
+    icon: '/images/home/icon.png',
+    autoplay: true,
+    interval: 3000,
+    duration: 1000,
+    circular: true,
+    current: 1,
+    activeMenu: 0,
+    showStatus: true
+  }
+  config = {
+    navigationBarTitleText: '首页'
+  }
+  onLoad(e) {
+    let that = this
+    wepy.getSystemInfo({
+      success: function(res) {
+        that.windowH = res.windowHeight
+        that.windowW = res.windowWidth
+      }
+    })
+  }
+  methods = {
+  }
+  getData() {
+    // const that = this
+    // if (that.loading === false) {
+    //   that.loading = true
+    //   setTimeout(() => {
+    //     for (let i = 0; i <= 5; i++) {
+    //       that.data.shopUrls.push('/images/home/shop.png')
+    //     }
+    //     // that.loading = false
+    //     that.$apply()
+    //   }, 1000)
+    // } else {
+
+    // }
+  }
+  lower(e) {
+    console.log(e)
+  }
+  scroll(e) {
+    console.log(e)
+  }
+}
+</script>
+
+<style lang="less" scoped>
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #403c38;
+    .hint{
+      font-size: 12px;
+      color: #aeadb4;
+      text-align:center;
+    }
+    .long-list {
+      .coupon-content{
+        border-top: 0.5px solid #2c2c2c;
+        border-bottom: 0.5px solid #2c2c2c;
+        padding: 0 3px;
+        padding-top: 6.5px;
+        .coupon-title{
+          color: #aeadb4;
+          font-size: 12px;
+          padding-left: 7px;
+          letter-spacing: 0.8px;
+          padding-bottom: 7px;
+        }
+        .coupon-list{
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+      }
+      .shop-content{
+        padding: 0 3px;
+        padding-top: 6.5px;
+        padding-bottom: 9px;
+        .shop-title{
+          color: #aeadb4;
+          font-size: 12px;
+          padding-left: 7px;
+          letter-spacing: 0.8px;
+          padding-bottom: 5px;
+        }
+        .shop-list {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+      }
+    }
+    .top-area {
+      width: 100%;
+      padding-top: 10px;
+      margin-bottom: 5px;
+    }
+    .btn-wrap-shadow{
+      position:absolute;
+      bottom:14px;
+      left:31.5%;
+      width:138px;
+      height:41px;
+      opacity: 0.54;
+      border-radius:22.5px;
+      background-color:#ffbd56;
+      animation:'ripple' 1.2s infinite;
+    }
+    .btn-wrap{
+      position: absolute;
+      bottom: 18px;
+      left: 32.5%;
+      border-radius: 17px;
+      
+      .btn{
+        width: 102px;
+        height: 34px;
+        padding: 0 14px;
+        border-radius: 17px;
+        background-color: #E7C594;
+        .text{
+          height:34px;
+          font-size:15px;
+          font-weight:500;
+          letter-spacing:1.2px;
+          text-align:center;
+          line-height:34px;
+          display:inline-block;
+          width:100%;
+          margin-left:5px;
+        }
+      }
+    }
+  }
+  @keyframes ripple {
+    0% {
+      transform: scale(1);
+    }
+    50%{
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      
+    }
+  }
+  .slide-image {
+    width: 100%;
+  }
+  
+  
+</style>
