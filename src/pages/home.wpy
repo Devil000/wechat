@@ -8,10 +8,10 @@
         indicator-dots="{{indicatorDots}}"
         autoplay="{{autoplay}}" 
         interval="{{interval}}" 
-        duration="{{duration}}" previous-margin="20rpx" next-margin="20rpx" current="{{current}}" circular="{{circular}}">
+        duration="{{duration}}" previous-margin="14rpx" next-margin="8rpx" current="{{current}}" circular="{{circular}}" style="height:{{swiperH+ 'px'}};">
         <repeat for="{{imgUrls}}" key="index" index="index" item="item">
           <swiper-item>
-            <image src="{{item}}" class="slide-image" mode="widthFix" style="width:100%;border-radius: 4px;"></image>
+            <image src="{{item}}" class="slide-image" mode="widthFix" style="width:99%;border-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;"></image>
           </swiper-item>
         </repeat>
       </swiper>
@@ -38,12 +38,14 @@
     <view class="btn-wrap-shadow">
     </view>
     <view class="btn-wrap">
-      <view class="btn">
-        <image src="{{icon}}" mode="aspectFit" bindload="imageIconLoad" style="width:15%; height: 100%; position:absolute;"></image>
-        <view class="text">
-          <navigator url="/pages/floor" open-type="navigate" hover-class="navigator-hover">活动导航</navigator>
+      <navigator url="/pages/floor" open-type="navigate" hover-class="navigator-hover" class="navi">
+        <view class="btn">
+          <image src="{{icon}}" mode="aspectFit" bindload="imageIconLoad" style="width:15%; height: 100%; position:absolute;z-index:1"></image>
+          <view class="text">
+            活动导航
+          </view>
         </view>
-      </view>
+      </navigator>
     </view>
   </view>
  </template>
@@ -70,12 +72,12 @@ export default class Home extends wepy.page {
     windowW: 0,
     loading: false,
     imgUrls: [
-      '/images/home/banner.png',
-      '/images/home/banner.png',
-      '/images/home/banner.png'
+      '/images/home/banner2.png',
+      '/images/home/banner1.png',
+      '/images/home/banner3.png'
     ],
-    couponUrls: ['/images/home/coupon1.png', '/images/home/coupon.png'],
-    shopUrls: ['/images/home/shop.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop1.png', '/images/home/shop.png'],
+    couponUrls: ['/images/home/coupon1.png', '/images/home/coupon2.png'],
+    shopUrls: ['/images/home/commodity3.png', '/images/home/commodity2.png', '/images/home/commodity4.png', '/images/home/commodity1.png'],
     indicatorDots: false,
     icon: '/images/home/icon.png',
     autoplay: true,
@@ -84,7 +86,8 @@ export default class Home extends wepy.page {
     circular: true,
     current: 1,
     activeMenu: 0,
-    showStatus: true
+    showStatus: true,
+    swiperH: 0
   }
   config = {
     navigationBarTitleText: '首页'
@@ -95,6 +98,11 @@ export default class Home extends wepy.page {
       success: function(res) {
         that.windowH = res.windowHeight
         that.windowW = res.windowWidth
+        if (that.windowW > 375) {
+          that.swiperH = 165
+        } else {
+          that.swiperH = 150
+        }
       }
     })
   }
@@ -187,12 +195,12 @@ export default class Home extends wepy.page {
     .btn-wrap-shadow{
       position:absolute;
       bottom:14px;
-      left:31.5%;
-      width:138px;
-      height:41px;
-      opacity: 0.54;
+      left:31.1%;
+      width:146px;
+      height:48px;
+      opacity:.90;
       border-radius:22.5px;
-      background-color:#ffbd56;
+      background-color:#E7C594;
       animation:'ripple' 1.2s infinite;
     }
     .btn-wrap{
@@ -200,23 +208,25 @@ export default class Home extends wepy.page {
       bottom: 18px;
       left: 32.5%;
       border-radius: 17px;
-      
-      .btn{
-        width: 102px;
-        height: 34px;
-        padding: 0 14px;
-        border-radius: 17px;
-        background-color: #E7C594;
-        .text{
-          height:34px;
-          font-size:15px;
-          font-weight:500;
-          letter-spacing:1.2px;
-          text-align:center;
-          line-height:34px;
-          display:inline-block;
-          width:100%;
-          margin-left:5px;
+      .navi{
+        .btn{
+          width: 109px;
+          height: 40px;
+          padding: 0 14px;
+          border-radius: 17px;
+          background-color: #fff;
+          .text{
+            height:40px;
+            font-size:16px;
+            font-weight:500;
+            letter-spacing:1.2px;
+            text-align:center;
+            line-height:40px;
+            color: #E7C594;
+            display:inline-block;
+            width:100%;
+            margin-left:12px;
+          }
         }
       }
     }
