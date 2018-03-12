@@ -11,7 +11,7 @@
         duration="{{duration}}" previous-margin="14rpx" next-margin="8rpx" current="{{current}}" circular="{{circular}}" style="height:{{swiperH+ 'px'}};">
         <repeat for="{{imgUrls}}" key="index" index="index" item="item">
           <swiper-item>
-            <image src="{{item}}" class="slide-image" mode="widthFix" style="width:99%;border-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;"></image>
+            <image src="{{item}}" class="slide-image" mode="widthFix" style="width:99%;border-radius: 4px;"></image>
           </swiper-item>
         </repeat>
       </swiper>
@@ -38,7 +38,7 @@
     <view class="btn-wrap-shadow">
     </view>
     <view class="btn-wrap">
-      <navigator url="/pages/floor" open-type="navigate" hover-class="navigator-hover" class="navi">
+      <navigator url="/pages/feng" open-type="navigate" hover-class="navigator-hover" class="navi">
         <view class="btn">
           <image src="{{icon}}" mode="aspectFit" bindload="imageIconLoad" style="width:15%; height: 100%; position:absolute;z-index:1"></image>
           <view class="text">
@@ -90,10 +90,15 @@ export default class Home extends wepy.page {
     swiperH: 0
   }
   config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '星视度联动'
   }
   onLoad(e) {
     let that = this
+    wepy.showShareMenu({
+      success: function(res) {
+        console.log(res)
+      }
+    })
     wepy.getSystemInfo({
       success: function(res) {
         that.windowH = res.windowHeight
@@ -194,19 +199,20 @@ export default class Home extends wepy.page {
     }
     .btn-wrap-shadow{
       position:absolute;
-      bottom:14px;
-      left:31.1%;
+      bottom:16px;
+      left:29.1%;
       width:146px;
       height:48px;
       opacity:.90;
       border-radius:22.5px;
       background-color:#E7C594;
       animation:'ripple' 1.2s infinite;
+      -webkit-animation:'ripple' 1.2s infinite;
     }
     .btn-wrap{
       position: absolute;
-      bottom: 18px;
-      left: 32.5%;
+      bottom: 20px;
+      left: 30.5%;
       border-radius: 17px;
       .navi{
         .btn{
@@ -214,7 +220,7 @@ export default class Home extends wepy.page {
           height: 40px;
           padding: 0 14px;
           border-radius: 17px;
-          background-color: #fff;
+          background-color: #272624;
           .text{
             height:40px;
             font-size:16px;
@@ -236,7 +242,7 @@ export default class Home extends wepy.page {
       transform: scale(1);
     }
     50%{
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
     100% {
       transform: scale(1);

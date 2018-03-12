@@ -10,7 +10,7 @@
       </picker>
     </view>
     <navigator url="/pages/feng" open-type="redirect" delta="1" hover-class="none">
-      <image mode="widthFix" src="{{icon3D}}" style="width:13%;position:absolute;top: 30px;right: 10px; z-index: 3000;"></image>
+      <image mode="widthFix" src="{{icon3D}}" style="width:15%;position:absolute;top: 28px;right: 10px; z-index: 3000;"></image>
     </navigator>
   </view>
   <scroll-view bindscroll="scroll" class="long-list" scroll-y="true" bindscrolltolower="getData" style="white-space:nowrap;height: {{windowH+'px'}}" >
@@ -26,8 +26,7 @@
       <view class="pop-model">
         <span class="title">联动说明</span>
         <span class="pop-text">
-          描述文字描述文字描述文字描述文字描述文字描
-          述文字描述文字描述文字
+          {{popText}}
         </span>
         <image mode="widthFix" src="{{close}}" class="pop-close" @tap="closePop"></image>
       </view>
@@ -52,12 +51,16 @@ export default class Floor extends wepy.page {
     popH: 0,
     icon3D: '/images/floor/3D.png',
     showPop: false,
-    close: '/images/floor/close.png'
+    close: '/images/floor/close.png',
+    popText: ''
   };
   onLoad() {
     let that = this
-    console.log(this)
-    console.log(wepy)
+    wepy.showShareMenu({
+      success: function(res) {
+        console.log(res)
+      }
+    })
     wepy.getSystemInfo({
       success: function(res) {
         that.windowH = res.windowHeight - 50
@@ -67,11 +70,12 @@ export default class Floor extends wepy.page {
     })
   }
   config = {
-    navigationBarTitleText: '楼层列表'
+    navigationBarTitleText: '机器导览'
   }
   methods = {
-    openPop(value, events) {
+    openPop(value, info) {
       this.showPop = value
+      this.popText = info
     },
     closePop() {
       this.showPop = false
@@ -151,7 +155,7 @@ export default class Floor extends wepy.page {
   }
 
   .pop-back {
-    background-color:rgba(0,0,0,0.77);
+    background-color:rgba(0,0,0,0.87);
     width: 100%;
     z-index: 2000;  
     position: fixed;
